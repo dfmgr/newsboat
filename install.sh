@@ -139,12 +139,12 @@ ensure_perms
 
 if [ -d "$DOWNLOADED_TO/.git" ]; then
   execute \
-    "git_update $APPDIR" \
+    "git_update $DOWNLOADED_TO" \
     "Updating $APPNAME configurations"
 else
   execute \
     "backupapp && \
-        git_clone -q $REPO/$APPNAME $APPDIR" \
+        git_clone -q $REPO/$APPNAME $DOWNLOADED_TO" \
     "Installing $APPNAME configurations"
 fi
 
@@ -177,12 +177,12 @@ failexitcode
 run_postinst() {
   dfmgr_run_post
   if [ ! -f "$DOWNLOADED_TO/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
-    newsboat -i $APPDIR/news.opml
+    newsboat -i $DOWNLOADED_TO/news.opml
   fi
   if [ -f "$DOWNLOADED_TO/newurls" ]; then
     if cmd_exist rssadd; then
-      while read line; do
-        rssadd $line
+      while read -r line; do
+        rssadd "$line"
       done <"$DOWNLOADED_TO/newurls"
     fi
   fi
