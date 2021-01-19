@@ -52,7 +52,7 @@ APPNAME="${APPNAME:-newsboat}"
 APPDIR="${APPDIR:-$HOME/.config/$APPNAME}"
 REPO="${DFMGRREPO:-https://github.com/dfmgr}/${APPNAME}"
 REPORAW="${REPORAW:-$REPO/raw}"
-APPVERSION="$(curl -LSs $REPORAW/master/version.txt)"
+APPVERSION="$(__appversion)"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -137,15 +137,15 @@ ensure_perms
 
 # Main progam
 
-if [ -d "$APPDIR/.git" ]; then
+if [ -d "$DOWNLOADED_TO/.git" ]; then
   execute \
-  "git_update $APPDIR" \
-  "Updating $APPNAME configurations"
+    "git_update $APPDIR" \
+    "Updating $APPNAME configurations"
 else
   execute \
-  "backupapp && \
+    "backupapp && \
         git_clone -q $REPO/$APPNAME $APPDIR" \
-  "Installing $APPNAME configurations"
+    "Installing $APPNAME configurations"
 fi
 
 # exit on fail
@@ -158,12 +158,12 @@ failexitcode
 if [ "$PLUGNAMES" != "" ]; then
   if [ -d "$PLUGDIR"/PLUREP/.git ]; then
     execute \
-    "git_update $PLUGDIR/PLUGREP" \
-    "Updating plugin PLUGNAME"
+      "git_update $PLUGDIR/PLUGREP" \
+      "Updating plugin PLUGNAME"
   else
     execute \
-    "git_clone PLUGINREPO $PLUGDIR/PLUGREP" \
-    "Installing plugin PLUGREP"
+      "git_clone PLUGINREPO $PLUGDIR/PLUGREP" \
+      "Installing plugin PLUGREP"
   fi
 fi
 
@@ -176,22 +176,22 @@ failexitcode
 
 run_postinst() {
   dfmgr_run_post
-  if [ ! -f "$APPDIR/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
+  if [ ! -f "$DOWNLOADED_TO/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
     newsboat -i $APPDIR/news.opml
   fi
-  if [ -f "$APPDIR/newurls" ]; then
+  if [ -f "$DOWNLOADED_TO/newurls" ]; then
     if cmd_exist rssadd; then
       while read line; do
         rssadd $line
-      done <"$APPDIR/newurls"
+      done <"$DOWNLOADED_TO/newurls"
     fi
   fi
   newsboat -x reload
 }
 
 execute \
-"run_postinst" \
-"Running post install scripts"
+  "run_postinst" \
+  "Running post install scripts"
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
