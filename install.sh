@@ -156,17 +156,17 @@ failexitcode
 # Plugins
 
 if __am_i_online; then
-if [ "$PLUGNAMES" != "" ]; then
-  if [ -d "$PLUGDIR"/PLUREP/.git ]; then
-    execute \
-      "git_update $PLUGDIR/PLUGREP" \
-      "Updating plugin PLUGNAME"
-  else
-    execute \
-      "git_clone PLUGINREPO $PLUGDIR/PLUGREP" \
-      "Installing plugin PLUGREP"
+  if [ "$PLUGNAMES" != "" ]; then
+    if [ -d "$PLUGDIR"/PLUREP/.git ]; then
+      execute \
+        "git_update $PLUGDIR/PLUGREP" \
+        "Updating plugin PLUGNAME"
+    else
+      execute \
+        "git_clone PLUGINREPO $PLUGDIR/PLUGREP" \
+        "Installing plugin PLUGREP"
+    fi
   fi
-fi
 fi
 
 # exit on fail
@@ -178,17 +178,19 @@ failexitcode
 
 run_postinst() {
   dfmgr_run_post
-  if [ ! -f "$DOWNLOADED_TO/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
-    newsboat -i $DOWNLOADED_TO/news.opml
-  fi
-  if [ -f "$DOWNLOADED_TO/newurls" ]; then
-    if cmd_exist rssadd; then
-      while read -r line; do
-        rssadd "$line"
-      done <"$DOWNLOADED_TO/newurls"
+  if __cmd_exists newsboat; then
+    if [ ! -f "$DOWNLOADED_TO/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
+      newsboat -i $DOWNLOADED_TO/news.opml
     fi
+    if [ -f "$DOWNLOADED_TO/newurls" ]; then
+      if cmd_exist rssadd; then
+        while read -r line; do
+          rssadd "$line"
+        done <"$DOWNLOADED_TO/newurls"
+      fi
+    fi
+    newsboat -x reload
   fi
-  newsboat -x reload
 }
 
 execute \
