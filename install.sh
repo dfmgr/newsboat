@@ -137,14 +137,17 @@ ensure_perms
 
 # Main progam
 
+if [ -d "$APPDIR" ]; then
+  execute "backupapp $APPDIR $APPNAME" "Backing up $APPDIR"
+fi
+
 if [ -d "$DOWNLOADED_TO/.git" ]; then
   execute \
     "git_update $DOWNLOADED_TO" \
     "Updating $APPNAME configurations"
 else
   execute \
-    "backupapp && \
-        git_clone -q $REPO/$APPNAME $DOWNLOADED_TO" \
+    "git_clone -q $REPO/$APPNAME $DOWNLOADED_TO" \
     "Installing $APPNAME configurations"
 fi
 
@@ -167,10 +170,10 @@ if __am_i_online; then
         "Installing plugin PLUGREP"
     fi
   fi
-fi
 
-# exit on fail
-failexitcode
+  # exit on fail
+  failexitcode
+fi
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -178,9 +181,10 @@ failexitcode
 
 run_postinst() {
   dfmgr_run_post
+  mkd "$APPDIR"
   if __cmd_exists newsboat; then
     if [ ! -f "$DOWNLOADED_TO/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
-      newsboat -i $DOWNLOADED_TO/news.opml
+      newsboat -i "$DOWNLOADED_TO/news.opml"
     fi
     if [ -f "$DOWNLOADED_TO/newurls" ]; then
       if cmd_exist rssadd; then
