@@ -50,6 +50,7 @@ scripts_check
 # Defaults
 APPNAME="${APPNAME:-newsboat}"
 APPDIR="${APPDIR:-$HOME/.config/$APPNAME}"
+INSTDIR="${INSTDIR}"
 REPO="${DFMGRREPO:-https://github.com/dfmgr}/${APPNAME}"
 REPORAW="${REPORAW:-$REPO/raw}"
 APPVERSION="$(__appversion)"
@@ -141,13 +142,13 @@ if [ -d "$APPDIR" ]; then
   execute "backupapp $APPDIR $APPNAME" "Backing up $APPDIR"
 fi
 
-if [ -d "$DOWNLOADED_TO/.git" ]; then
+if [ -d "$INSTDIR/.git" ]; then
   execute \
-    "git_update $DOWNLOADED_TO" \
+    "git_update $INSTDIR" \
     "Updating $APPNAME configurations"
 else
   execute \
-    "git_clone $REPO/$APPNAME $DOWNLOADED_TO" \
+    "git_clone $REPO/$APPNAME $INSTDIR" \
     "Installing $APPNAME configurations"
 fi
 
@@ -183,14 +184,14 @@ run_postinst() {
   dfmgr_run_post
   mkd "$APPDIR"
   if __cmd_exists newsboat; then
-    if [ ! -f "$DOWNLOADED_TO/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
-      newsboat -i "$DOWNLOADED_TO/news.opml"
+    if [ ! -f "$INSTDIR/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
+      newsboat -i "$INSTDIR/news.opml"
     fi
-    if [ -f "$DOWNLOADED_TO/newurls" ]; then
+    if [ -f "$INSTDIR/newurls" ]; then
       if cmd_exist rssadd; then
         while read -r line; do
           rssadd "$line"
-        done <"$DOWNLOADED_TO/newurls"
+        done <"$INSTDIR/newurls"
       fi
     fi
     newsboat -x reload
