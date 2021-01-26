@@ -184,8 +184,8 @@ run_postinst() {
   dfmgr_run_post
   mkd "$APPDIR"
   if __cmd_exists newsboat; then
-    if [ ! -f "$INSTDIR/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
-      newsboat -i "$INSTDIR/news.opml"
+    if [ ! -s "$APPDIR/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
+      newsboat --import-from-file "$APPDIR/news.opml"
     fi
     if [ -f "$INSTDIR/newurls" ]; then
       if cmd_exist rssadd; then
