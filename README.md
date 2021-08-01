@@ -5,7 +5,7 @@ Newsboat is an RSS/Atom feed reader for the text console
 Automatic install/update:
 
 ```shell
-bash -c "$(curl -LSs https://github.com/dfmgr/newsboat/raw/master/install.sh)"
+bash -c "$(curl -LSs https://github.com/dfmgr/newsboat/raw/main/install.sh)"
 ```
 
 Manual install:
