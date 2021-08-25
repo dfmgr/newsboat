@@ -36,7 +36,7 @@ fi
 # helper function
 __version() { app_version; }
 __help() {
-  app_help "Usage: newsup  -  newsup --version"  \
+  app_help "Usage: newsup  -  newsup --version" \
     "-v, --version          -  display version" \
     "-h, --help             -  display help"
 }
@@ -46,8 +46,8 @@ main() {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # options
   case $1 in
-    -v | --version) __version ;;
-    -h | --help) __help ;;
+  -v | --version) __version ;;
+  -h | --help) __help ;;
   esac
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Required app check
@@ -59,7 +59,7 @@ main() {
   if pgrep -x newsboat &>/dev/null; then
     /usr/bin/xdotool key --window "$(/usr/bin/xdotool search --name newsboat)" R
   else
-    echo 🔃 > /tmp/newsupdate
+    echo 🔃 >/tmp/newsupdate
     [ -n "$STATUSBAR" ] && pkill -RTMIN+6 "${STATUSBAR:?}"
     /usr/bin/newsboat -x reload
     rm -f /tmp/newsupdate
@@ -75,4 +75,3 @@ main "$@"
 exit $?
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # end
-

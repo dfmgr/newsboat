@@ -36,7 +36,7 @@ fi
 # helper function
 __version() { app_version; }
 __help() {
-  app_help "Usage: rssadd  -  rssadd --version"  \
+  app_help "Usage: rssadd  -  rssadd --version" \
     "-v, --version          -  display version" \
     "-h, --help             -  display help"
 }
@@ -46,23 +46,23 @@ main() {
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # options
   case $1 in
-    -v | --version) __version ;;
-    -h | --help) __help ;;
+  -v | --version) __version ;;
+  -h | --help) __help ;;
   esac
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # Required app check
   cmd_exists --error bash newsboat || exit 1
   # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   # begin main app
-	local RSSFILE="$HOME/.config/newsboat/urls"
+  local RSSFILE="$HOME/.config/newsboat/urls"
   am_i_online --error || return 1
   if check_uri "$1"; then
     if awk '{print $1}' "$RSSFILE" | grep -q "^$1$" &>/dev/null; then
-	    notifications "rssadd" "You already have this RSS feed."
-		  local exitCode=1
+      notifications "rssadd" "You already have this RSS feed."
+      local exitCode=1
     else
-		  echo "$1" >> "$RSSFILE" && notifications "rssadd" "RSS feed added."
-	  fi
+      echo "$1" >>"$RSSFILE" && notifications "rssadd" "RSS feed added."
+    fi
   else
     notifications "rssadd" "That doesn't look like a full URL."
     local exitCode=1
@@ -76,4 +76,3 @@ main "$@"
 exit $?
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # end
-
