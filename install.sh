@@ -141,7 +141,20 @@ __run_prepost_install() {
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 # run after primary post install function
 __run_post_install() {
-
+  mkd "$APPDIR"
+  if __cmd_exists newsboat; then
+    if [ ! -s "$APPDIR/urls" ] || [ ! -f "$SHARE/newsboat/cache.db" ]; then
+      newsboat --import-from-file "$APPDIR/news.opml"
+    fi
+    if [ -f "$INSTDIR/newurls" ]; then
+      if cmd_exist rssadd; then
+        while read -r line; do
+          rssadd "$line"
+        done <"$INSTDIR/newurls"
+      fi
+    fi
+    newsboat -x reload
+  fi
   return ${?:-0}
 }
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
